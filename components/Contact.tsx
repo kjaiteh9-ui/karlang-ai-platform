@@ -1,19 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, Send, CheckCircle2, MapPin, Zap } from "lucide-react";
+import { Mail, Phone, Send, CheckCircle2, MapPin, Zap, AlertCircle } from "lucide-react";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    await new Promise((r) => setTimeout(r, 1800));
-    setSending(false);
-    setSent(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      setSent(true);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -30,7 +48,9 @@ export default function Contact() {
           </div>
           <h2 className="font-orbitron text-4xl md:text-5xl font-black mb-4">
             <span className="text-[rgba(232,244,255,0.9)]">OPEN</span>{" "}
-            <span className="neon-text-green text-[#00ff88]">CHANNEL</span>
+            <span className="text-[#00ff88]" style={{ textShadow: "0 0 10px rgba(0,255,136,0.8), 0 0 20px rgba(0,255,136,0.5)" }}>
+              CHANNEL
+            </span>
           </h2>
           <p className="font-exo text-[rgba(232,244,255,0.5)] text-sm max-w-xl mx-auto">
             Ready to build intelligent systems? Reach out for consulting, custom AI agents, or automation projects.
@@ -42,27 +62,9 @@ export default function Contact() {
           {/* Contact info */}
           <div className="lg:col-span-2 space-y-5">
             {[
-              {
-                icon: Mail,
-                label: "Email",
-                value: "kjaiteh9@gmail.com",
-                href: "mailto:kjaiteh9@gmail.com",
-                color: "#00d4ff",
-              },
-              {
-                icon: Phone,
-                label: "Phone",
-                value: "+1 (912) 480-1070",
-                href: "tel:+19124801070",
-                color: "#8b00ff",
-              },
-              {
-                icon: MapPin,
-                label: "Timezone",
-                value: "EST — Available 24/7",
-                href: undefined,
-                color: "#00ff88",
-              },
+              { icon: Mail, label: "Email", value: "kjaiteh9@gmail.com", href: "mailto:kjaiteh9@gmail.com", color: "#00d4ff" },
+              { icon: Phone, label: "Phone", value: "+1 (912) 480-1070", href: "tel:+19124801070", color: "#8b00ff" },
+              { icon: MapPin, label: "Timezone", value: "EST — Available 24/7", href: undefined, color: "#00ff88" },
             ].map((item, i) => (
               <a
                 key={i}
@@ -84,7 +86,7 @@ export default function Contact() {
               </a>
             ))}
 
-            <div className="glass-card rounded-xl p-5 border-[rgba(0,255,136,0.15)]">
+            <div className="glass-card rounded-xl p-5" style={{ borderColor: "rgba(0,255,136,0.15)" }}>
               <div className="flex items-center gap-2 mb-3">
                 <Zap size={14} className="text-[#00ff88]" />
                 <span className="font-orbitron text-xs font-bold text-[#00ff88] tracking-widest">STATUS</span>
@@ -98,11 +100,7 @@ export default function Contact() {
                 ].map((s, i) => (
                   <div key={i} className="flex items-center justify-between">
                     <span className="font-exo text-xs text-[rgba(232,244,255,0.5)]">{s.label}</span>
-                    <span
-                      className={`font-mono-cyber text-[9px] tracking-widest ${
-                        s.status === "OPEN" ? "text-[#00ff88]" : "text-[#ffcc00]"
-                      }`}
-                    >
+                    <span className={`font-mono-cyber text-[9px] tracking-widest ${s.status === "OPEN" ? "text-[#00ff88]" : "text-[#ffcc00]"}`}>
                       {s.status}
                     </span>
                   </div>
@@ -111,19 +109,38 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Form */}
+          {/* Form / Success */}
           <div className="lg:col-span-3">
             {sent ? (
-              <div className="glass-card rounded-2xl p-12 text-center h-full flex flex-col items-center justify-center">
-                <CheckCircle2 size={52} className="text-[#00ff88] mb-4" />
-                <div className="font-orbitron text-xl font-bold text-[#00ff88] neon-text-green mb-2">
-                  MESSAGE TRANSMITTED
+              /* ── SUCCESS STATE ─────────────────────────────────────────── */
+              <div
+                className="glass-card rounded-2xl py-20 px-10 text-center flex flex-col items-center justify-center"
+                style={{ border: "1px solid rgba(0,255,136,0.3)", boxShadow: "0 0 40px rgba(0,255,136,0.08)" }}
+              >
+                <div className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
+                  style={{ background: "rgba(0,255,136,0.1)", border: "2px solid rgba(0,255,136,0.4)" }}>
+                  <CheckCircle2 size={40} className="text-[#00ff88]" />
                 </div>
-                <p className="font-exo text-sm text-[rgba(232,244,255,0.5)]">
-                  Signal received. Karlang will respond within 24 hours.
+                <h3 className="font-orbitron text-2xl font-black text-[#00ff88] mb-3 tracking-wider"
+                  style={{ textShadow: "0 0 20px rgba(0,255,136,0.6), 0 0 40px rgba(0,255,136,0.3)" }}>
+                  MESSAGE TRANSMITTED
+                </h3>
+                <p className="font-exo text-[rgba(232,244,255,0.6)] text-sm max-w-xs leading-relaxed mb-6">
+                  Signal received loud and clear. Karlang will respond within 24 hours.
                 </p>
+                <div className="font-mono-cyber text-[9px] text-[rgba(0,255,136,0.5)] tracking-[0.2em]">
+                  ✓ DELIVERED TO kjaiteh9@gmail.com
+                </div>
+                <button
+                  onClick={() => { setSent(false); setForm({ name: "", email: "", subject: "", message: "" }); }}
+                  className="mt-8 btn-outline px-6 py-2 rounded-lg text-xs"
+                  style={{ borderColor: "rgba(0,255,136,0.3)", color: "#00ff88" }}
+                >
+                  SEND ANOTHER
+                </button>
               </div>
             ) : (
+              /* ── FORM ──────────────────────────────────────────────────── */
               <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-7 space-y-5">
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div>
@@ -152,6 +169,7 @@ export default function Contact() {
                     />
                   </div>
                 </div>
+
                 <div>
                   <label className="block font-mono-cyber text-[9px] text-[rgba(0,212,255,0.5)] tracking-widest mb-1.5 uppercase">
                     Subject
@@ -164,6 +182,7 @@ export default function Contact() {
                     onChange={(e) => setForm((f) => ({ ...f, subject: e.target.value }))}
                   />
                 </div>
+
                 <div>
                   <label className="block font-mono-cyber text-[9px] text-[rgba(0,212,255,0.5)] tracking-widest mb-1.5 uppercase">
                     Message
@@ -177,10 +196,19 @@ export default function Contact() {
                     onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
                   />
                 </div>
+
+                {/* Error message */}
+                {error && (
+                  <div className="flex items-start gap-2 px-4 py-3 rounded-lg bg-[rgba(255,51,85,0.08)] border border-[rgba(255,51,85,0.25)]">
+                    <AlertCircle size={14} className="text-[#ff3355] flex-shrink-0 mt-0.5" />
+                    <span className="font-exo text-xs text-[#ff3355]">{error}</span>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={sending}
-                  className="w-full btn-primary py-4 rounded-lg text-sm font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 disabled:opacity-60"
+                  className="w-full btn-primary py-4 rounded-lg text-sm font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {sending ? (
                     <>
