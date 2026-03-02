@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
+// Lazy-initialize inside handler so build succeeds without OPENAI_API_KEY
 export async function POST(req: NextRequest) {
   try {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json(
+        { error: "OpenAI API key not configured. Add OPENAI_API_KEY to environment variables." },
+        { status: 503 }
+      );
+    }
+
+    const openai = new OpenAI({ apiKey });
     const { messages, agentName, systemPrompt } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
