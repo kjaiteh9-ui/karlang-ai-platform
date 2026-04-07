@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { Zap, ArrowRight, Loader2, Sparkles, CreditCard, Send, MessageSquare } from "lucide-react";
+import { Zap, ArrowRight, Sparkles, CreditCard, RefreshCw, MessageSquare } from "lucide-react";
 
 const tiers = [
   {
@@ -12,6 +11,7 @@ const tiers = [
     monthly: 99,
     setupNote: "Design + build",
     monthlyNote: "Hosting, updates, uptime",
+    payLink: "https://buy.stripe.com/eVq6oAgoyfTUdsR0pm5EY00",
     features: ["Up to 3 pages", "Contact form", "Mobile responsive", "Basic SEO setup"],
     color: "#00d4ff",
     popular: false,
@@ -24,6 +24,7 @@ const tiers = [
     monthly: 199,
     setupNote: "Design + build + content",
     monthlyNote: "Hosting, updates, support",
+    payLink: "https://buy.stripe.com/00waEQ1tE0Z09cBc845EY01",
     features: ["Up to 8 pages", "Blog or news section", "Google Analytics", "Monthly content edits"],
     color: "#8b00ff",
     popular: true,
@@ -36,6 +37,7 @@ const tiers = [
     monthly: 349,
     setupNote: "Design + store + products",
     monthlyNote: "Hosting, store, security",
+    payLink: "https://buy.stripe.com/5kQ7sE8W6gXY74tegc5EY02",
     features: ["Up to 50 products", "Payment integration", "Inventory management", "Monthly performance report"],
     color: "#00ff88",
     popular: false,
@@ -48,6 +50,7 @@ const tiers = [
     monthly: 499,
     setupNote: "Scoped per project",
     monthlyNote: "Dedicated support",
+    payLink: "https://buy.stripe.com/5kQbIU3BMbDE1K94FC5EY03",
     features: ["Custom features & portals", "Integrations (CRM, API)", "Priority support", "Monthly strategy call"],
     color: "#ff6b35",
     popular: false,
@@ -55,25 +58,6 @@ const tiers = [
 ];
 
 export default function Pricing() {
-  const [loading, setLoading] = useState<string | null>(null);
-
-  const handleCheckout = async (tier: string) => {
-    setLoading(tier);
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier, type: "setup" }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      }
-    } catch {
-      setLoading(null);
-    }
-  };
-
   const handleContact = (tierName: string) => {
     const contactSection = document.getElementById("contact");
     if (contactSection) {
@@ -171,28 +155,25 @@ export default function Pricing() {
                   {tier.id === "custom" && <span className="font-exo text-sm text-[rgba(232,244,255,0.4)]">+</span>}
                 </div>
                 <p className="font-exo text-[10px] text-[rgba(232,244,255,0.35)] mb-3">{tier.setupNote}</p>
-                <button
-                  onClick={() => handleCheckout(tier.id)}
-                  disabled={loading === tier.id}
-                  className="w-full py-2.5 rounded-lg text-xs font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-60 hover:scale-[1.02] active:scale-[0.98]"
+                <a
+                  href={tier.payLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-2.5 rounded-lg text-xs font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                   style={{
                     background: `${tier.color}15`,
                     border: `1px solid ${tier.color}40`,
                     color: tier.color,
                   }}
                 >
-                  {loading === tier.id ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <>PAY SETUP FEE <ArrowRight size={12} /></>
-                  )}
-                </button>
+                  PAY SETUP FEE <ArrowRight size={12} />
+                </a>
               </div>
 
               {/* Monthly price display */}
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <Send size={10} style={{ color: `${tier.color}80` }} />
+                  <RefreshCw size={10} style={{ color: `${tier.color}80` }} />
                   <span className="font-mono-cyber text-[9px] text-[rgba(232,244,255,0.4)] tracking-widest">MONTHLY MAINTENANCE</span>
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
