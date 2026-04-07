@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Zap, ArrowRight, Loader2, Sparkles, CreditCard, RefreshCw } from "lucide-react";
+import { Zap, ArrowRight, Loader2, Sparkles, CreditCard, Send, MessageSquare } from "lucide-react";
 
 const tiers = [
   {
@@ -57,14 +57,13 @@ const tiers = [
 export default function Pricing() {
   const [loading, setLoading] = useState<string | null>(null);
 
-  const handleCheckout = async (tier: string, type: "setup" | "monthly") => {
-    const key = `${tier}-${type}`;
-    setLoading(key);
+  const handleCheckout = async (tier: string) => {
+    setLoading(tier);
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier, type }),
+        body: JSON.stringify({ tier, type: "setup" }),
       });
       const data = await res.json();
       if (data.url) {
@@ -72,6 +71,21 @@ export default function Pricing() {
       }
     } catch {
       setLoading(null);
+    }
+  };
+
+  const handleContact = (tierName: string) => {
+    const contactSection = document.getElementById("contact");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        const subjectInput = document.querySelector<HTMLInputElement>('input[placeholder="e.g. Custom AI Agent Build"]');
+        if (subjectInput) {
+          const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+          nativeInputValueSetter?.call(subjectInput, `${tierName} Website Package Inquiry`);
+          subjectInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      }, 600);
     }
   };
 
@@ -158,8 +172,8 @@ export default function Pricing() {
                 </div>
                 <p className="font-exo text-[10px] text-[rgba(232,244,255,0.35)] mb-3">{tier.setupNote}</p>
                 <button
-                  onClick={() => handleCheckout(tier.id, "setup")}
-                  disabled={loading === `${tier.id}-setup`}
+                  onClick={() => handleCheckout(tier.id)}
+                  disabled={loading === tier.id}
                   className="w-full py-2.5 rounded-lg text-xs font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-60 hover:scale-[1.02] active:scale-[0.98]"
                   style={{
                     background: `${tier.color}15`,
@@ -167,7 +181,7 @@ export default function Pricing() {
                     color: tier.color,
                   }}
                 >
-                  {loading === `${tier.id}-setup` ? (
+                  {loading === tier.id ? (
                     <Loader2 size={14} className="animate-spin" />
                   ) : (
                     <>PAY SETUP FEE <ArrowRight size={12} /></>
@@ -175,10 +189,10 @@ export default function Pricing() {
                 </button>
               </div>
 
-              {/* Monthly price */}
+              {/* Monthly price display */}
               <div className="mb-6">
                 <div className="flex items-center gap-2 mb-2">
-                  <RefreshCw size={10} style={{ color: `${tier.color}80` }} />
+                  <Send size={10} style={{ color: `${tier.color}80` }} />
                   <span className="font-mono-cyber text-[9px] text-[rgba(232,244,255,0.4)] tracking-widest">MONTHLY MAINTENANCE</span>
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
@@ -188,27 +202,11 @@ export default function Pricing() {
                   <span className="font-exo text-sm text-[rgba(232,244,255,0.4)]">/mo</span>
                   {tier.id === "custom" && <span className="font-exo text-sm text-[rgba(232,244,255,0.4)]">+</span>}
                 </div>
-                <p className="font-exo text-[10px] text-[rgba(232,244,255,0.35)] mb-3">{tier.monthlyNote}</p>
-                <button
-                  onClick={() => handleCheckout(tier.id, "monthly")}
-                  disabled={loading === `${tier.id}-monthly`}
-                  className="w-full py-2.5 rounded-lg text-xs font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 transition-all duration-300 disabled:opacity-60 hover:scale-[1.02] active:scale-[0.98]"
-                  style={{
-                    background: "transparent",
-                    border: `1px solid ${tier.color}30`,
-                    color: `${tier.color}cc`,
-                  }}
-                >
-                  {loading === `${tier.id}-monthly` ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <>START SUBSCRIPTION <ArrowRight size={12} /></>
-                  )}
-                </button>
+                <p className="font-exo text-[10px] text-[rgba(232,244,255,0.35)]">{tier.monthlyNote}</p>
               </div>
 
               {/* Features */}
-              <div className="mt-auto">
+              <div className="mb-6">
                 <div className="font-mono-cyber text-[9px] text-[rgba(232,244,255,0.3)] tracking-widest mb-3">INCLUDES</div>
                 <div className="space-y-2.5">
                   {tier.features.map((feat, i) => (
@@ -218,6 +216,22 @@ export default function Pricing() {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* Contact button */}
+              <div className="mt-auto">
+                <button
+                  onClick={() => handleContact(tier.name)}
+                  className="w-full py-3 rounded-lg text-xs font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                  style={{
+                    background: "transparent",
+                    border: `1px solid ${tier.color}30`,
+                    color: `${tier.color}cc`,
+                  }}
+                >
+                  <MessageSquare size={14} />
+                  CONTACT FOR {tier.name.toUpperCase()}
+                </button>
               </div>
 
               {/* Hover line */}
@@ -239,8 +253,8 @@ export default function Pricing() {
           <div className="grid sm:grid-cols-3 gap-6">
             {[
               { step: "01", title: "Choose Your Tier", desc: "Pick the package that fits your business needs.", color: "#00d4ff" },
-              { step: "02", title: "Pay Setup Fee", desc: "One-time payment to design and build your website.", color: "#8b00ff" },
-              { step: "03", title: "Go Monthly", desc: "Ongoing hosting, updates, and support on autopilot.", color: "#00ff88" },
+              { step: "02", title: "Get In Touch", desc: "Contact us to discuss your project and get started.", color: "#8b00ff" },
+              { step: "03", title: "We Build It", desc: "We design, build, and launch your website.", color: "#00ff88" },
             ].map((s, i) => (
               <div key={i} className="text-center">
                 <div
