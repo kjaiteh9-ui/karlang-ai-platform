@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-04-30.basil",
-});
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!);
+}
 
 const PRICES: Record<string, { setup: string; monthly: string }> = {
   starter: {
@@ -36,6 +36,7 @@ export async function POST(req: NextRequest) {
     const priceId = type === "setup" ? tierPrices.setup : tierPrices.monthly;
     const mode = type === "setup" ? "payment" : "subscription";
 
+    const stripe = getStripe();
     const session = await stripe.checkout.sessions.create({
       mode,
       line_items: [{ price: priceId, quantity: 1 }],
