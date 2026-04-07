@@ -1,6 +1,61 @@
 "use client";
 
-import { Zap, ArrowRight, Sparkles, CreditCard, RefreshCw, MessageSquare } from "lucide-react";
+import { Zap, ArrowRight, Sparkles, CreditCard, RefreshCw, MessageSquare, Bot } from "lucide-react";
+
+const autoTiers = [
+  {
+    name: "Starter",
+    id: "auto-starter",
+    subtitle: "Simple website + essentials",
+    setup: 399,
+    monthly: 99,
+    setupNote: "Website + basic automation",
+    monthlyNote: "Hosting, updates, uptime",
+    payLink: "https://buy.stripe.com/cNi14gegqfTU88x0pm5EY04",
+    features: ["1-page or simple website", "Contact form", "Mobile-friendly design", "Call/text button"],
+    color: "#00d4ff",
+    popular: false,
+  },
+  {
+    name: "Pro",
+    id: "auto-pro",
+    subtitle: "Website + booking automation",
+    setup: 799,
+    monthly: 199,
+    setupNote: "Website + full booking system",
+    monthlyNote: "Hosting, automation, support",
+    payLink: "https://buy.stripe.com/cNibIU4FQcHIbkJfkg5EY05",
+    features: ["Website", "Booking system", "Confirmation messages", "Reminder messages", "Contact automation"],
+    color: "#8b00ff",
+    popular: true,
+  },
+  {
+    name: "Premium",
+    id: "auto-premium",
+    subtitle: "Full automation suite",
+    setup: 1299,
+    monthly: 299,
+    setupNote: "Website + complete automation",
+    monthlyNote: "Full automation support",
+    payLink: "https://buy.stripe.com/9B6aEQegq378fAZ2xu5EY06",
+    features: ["Website", "Booking setup", "Reminder system", "Follow-up automation", "Review request automation", "AI chat/help system", "Deposit setup"],
+    color: "#00ff88",
+    popular: false,
+  },
+  {
+    name: "Custom",
+    id: "auto-custom",
+    subtitle: "Enterprise-grade automation",
+    setup: 1499,
+    monthly: 499,
+    setupNote: "Scoped per project",
+    monthlyNote: "Dedicated support",
+    payLink: "https://buy.stripe.com/fZu14g8W67no0G5c845EY07",
+    features: ["Custom automation workflow", "Special business logic", "Multi-step client journey", "CRM or internal process setup", "Advanced integrations"],
+    color: "#ff6b35",
+    popular: false,
+  },
+];
 
 const tiers = [
   {
@@ -224,7 +279,7 @@ export default function Pricing() {
           ))}
         </div>
 
-        {/* How it works */}
+        {/* How it works - Website */}
         <div className="glass-card rounded-2xl p-8 max-w-3xl mx-auto">
           <div className="text-center mb-6">
             <h3 className="font-orbitron text-lg font-bold text-[rgba(232,244,255,0.8)] tracking-wider">
@@ -248,6 +303,151 @@ export default function Pricing() {
                   {s.title}
                 </h4>
                 <p className="font-exo text-[11px] text-[rgba(232,244,255,0.4)] leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* ── AGENTIC AUTOMATION SECTION ────────────────────────────── */}
+        <div className="mt-32">
+          {/* Divider */}
+          <div className="h-px bg-gradient-to-r from-transparent via-[#00ff88] to-transparent opacity-30 mb-20" />
+
+          {/* Header */}
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-[rgba(0,255,136,0.3)] bg-[rgba(0,255,136,0.05)] mb-6">
+              <Bot size={10} className="text-[#00ff88]" />
+              <span className="font-mono-cyber text-[10px] text-[#00ff88] tracking-[0.2em]">AUTOMATION.TIERS</span>
+            </div>
+            <h2 className="font-orbitron text-4xl md:text-5xl font-black mb-4">
+              <span className="text-[rgba(232,244,255,0.9)]">AGENTIC</span>{" "}
+              <span className="text-[#00ff88]" style={{ textShadow: "0 0 10px rgba(0,255,136,0.8), 0 0 20px rgba(0,255,136,0.5)" }}>
+                AUTOMATION
+              </span>
+            </h2>
+            <p className="font-exo text-[rgba(232,244,255,0.5)] text-base max-w-2xl mx-auto leading-relaxed">
+              Website + intelligent automation. Booking, reminders, follow-ups, reviews, and AI — all running on autopilot for your business.
+            </p>
+            <div className="cyber-divider max-w-sm mx-auto mt-6" />
+          </div>
+
+          {/* Automation Grid */}
+          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6 mb-16">
+            {autoTiers.map((tier) => (
+              <div
+                key={tier.id}
+                className="relative glass-card glass-card-hover rounded-2xl p-6 flex flex-col transition-all duration-300 group"
+                style={{
+                  borderColor: tier.popular ? `${tier.color}40` : undefined,
+                  boxShadow: tier.popular ? `0 0 40px ${tier.color}10` : undefined,
+                }}
+              >
+                {/* Popular badge */}
+                {tier.popular && (
+                  <div
+                    className="absolute -top-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-4 py-1 rounded-full text-[10px] font-orbitron font-bold tracking-widest z-10"
+                    style={{ background: `${tier.color}20`, border: `1px solid ${tier.color}50`, color: tier.color }}
+                  >
+                    <Sparkles size={10} />
+                    MOST POPULAR
+                  </div>
+                )}
+
+                {/* Corner accent */}
+                <div
+                  className="absolute top-0 right-0 w-24 h-24 opacity-5 rounded-bl-full"
+                  style={{ background: tier.color }}
+                />
+
+                {/* Tier name */}
+                <div className="mb-6">
+                  <h3
+                    className="font-orbitron text-lg font-bold tracking-wider"
+                    style={{ color: tier.color }}
+                  >
+                    {tier.name.toUpperCase()}
+                  </h3>
+                  <p className="font-exo text-xs text-[rgba(232,244,255,0.4)] mt-1">{tier.subtitle}</p>
+                </div>
+
+                {/* Setup price */}
+                <div className="mb-5 pb-5 border-b border-[rgba(232,244,255,0.08)]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CreditCard size={10} style={{ color: `${tier.color}80` }} />
+                    <span className="font-mono-cyber text-[9px] text-[rgba(232,244,255,0.4)] tracking-widest">ONE-TIME SETUP</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mb-1">
+                    <span className="font-orbitron text-3xl font-black text-[rgba(232,244,255,0.95)]">
+                      ${tier.setup.toLocaleString()}
+                    </span>
+                    {tier.id === "auto-custom" && <span className="font-exo text-sm text-[rgba(232,244,255,0.4)]">+</span>}
+                  </div>
+                  <p className="font-exo text-[10px] text-[rgba(232,244,255,0.35)] mb-3">{tier.setupNote}</p>
+                  <a
+                    href={tier.payLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 rounded-lg text-xs font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                    style={{
+                      background: `${tier.color}15`,
+                      border: `1px solid ${tier.color}40`,
+                      color: tier.color,
+                    }}
+                  >
+                    PAY SETUP FEE <ArrowRight size={12} />
+                  </a>
+                </div>
+
+                {/* Monthly price display */}
+                <div className="mb-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <RefreshCw size={10} style={{ color: `${tier.color}80` }} />
+                    <span className="font-mono-cyber text-[9px] text-[rgba(232,244,255,0.4)] tracking-widest">MONTHLY SUPPORT</span>
+                  </div>
+                  <div className="flex items-baseline gap-1 mb-1">
+                    <span className="font-orbitron text-2xl font-black text-[rgba(232,244,255,0.95)]">
+                      ${tier.monthly}
+                    </span>
+                    <span className="font-exo text-sm text-[rgba(232,244,255,0.4)]">/mo</span>
+                    {tier.id === "auto-custom" && <span className="font-exo text-sm text-[rgba(232,244,255,0.4)]">+</span>}
+                  </div>
+                  <p className="font-exo text-[10px] text-[rgba(232,244,255,0.35)]">{tier.monthlyNote}</p>
+                </div>
+
+                {/* Features */}
+                <div className="mb-6">
+                  <div className="font-mono-cyber text-[9px] text-[rgba(232,244,255,0.3)] tracking-widest mb-3">INCLUDES</div>
+                  <div className="space-y-2.5">
+                    {tier.features.map((feat, i) => (
+                      <div key={i} className="flex items-start gap-2.5">
+                        <Zap size={10} className="flex-shrink-0 mt-1" style={{ color: `${tier.color}80` }} />
+                        <span className="font-exo text-xs text-[rgba(232,244,255,0.6)] leading-relaxed">{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Contact button */}
+                <div className="mt-auto">
+                  <button
+                    onClick={() => handleContact(`${tier.name} Automation`)}
+                    className="w-full py-3 rounded-lg text-xs font-orbitron font-bold tracking-wider flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+                    style={{
+                      background: "transparent",
+                      border: `1px solid ${tier.color}30`,
+                      color: `${tier.color}cc`,
+                    }}
+                  >
+                    <MessageSquare size={14} />
+                    CONTACT FOR {tier.name.toUpperCase()}
+                  </button>
+                </div>
+
+                {/* Hover line */}
+                <div
+                  className="absolute bottom-0 left-0 h-px w-0 group-hover:w-full transition-all duration-500"
+                  style={{ background: `linear-gradient(90deg, transparent, ${tier.color}, transparent)` }}
+                />
               </div>
             ))}
           </div>
