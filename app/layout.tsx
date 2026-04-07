@@ -7,6 +7,10 @@ export const metadata: Metadata = {
     "Elite AI Agent Platform built by Karlang Diate — Software Engineer, AI Architect, and Intelligent Systems Builder. Deploy custom AI agents, automate workflows, and command your digital infrastructure.",
   keywords: ["AI Agent", "Karlang Diate", "AI Platform", "Automation", "n8n", "OpenAI", "Supabase"],
   authors: [{ name: "Karlang Diate" }],
+  icons: {
+    icon: "/icon.svg",
+    apple: "/icon.svg",
+  },
   openGraph: {
     title: "KARLANG DIATE | AI Command Platform",
     description: "Elite AI Agent Platform — Deploy, Manage & Command Intelligent Systems",
