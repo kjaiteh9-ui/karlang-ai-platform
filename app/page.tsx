@@ -2,6 +2,7 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Platform from "@/components/Platform";
+import Pricing from "@/components/Pricing";
 import Footer from "@/components/Footer";
 import Contact from "@/components/Contact";
 
@@ -12,6 +13,7 @@ export default function Home() {
       <Hero />
       <About />
       <Platform />
+      <Pricing />
       <Contact />
       <Footer />
     </main>

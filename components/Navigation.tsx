@@ -9,6 +9,7 @@ const navLinks = [
   { href: "/", label: "HOME" },
   { href: "/#about", label: "ABOUT" },
   { href: "/#platform", label: "PLATFORM" },
+  { href: "/#pricing", label: "PRICING" },
   { href: "/dashboard", label: "COMMAND CENTER" },
   { href: "/agents", label: "AI AGENTS" },
   { href: "/admin", label: "ADMIN" },
